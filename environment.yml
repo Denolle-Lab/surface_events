@@ -1,0 +1,17 @@
+name: seismo_exo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - jupyter
+  - matplotlib
+  - numpy
+  - pandas
+  - scipy
+  - pip
+  - obspy
+  - ipykernel
+  - IPython
+  - tsfresh
+  - h5py
+  - eqcorrscan
