@@ -4,13 +4,17 @@ The purpose of this project is to derive the flow velocities of surface events (
 
 This project is licensed under the MIT Public License.
 
-Dependencies
-Environment: 
+## Dependencies
+Environment: environment.yml
 
 Data: Data is from the Pacific Northwest Seismic Network. The catalog can be found here and the station and waveform data can be downloaded using pnwstore Client. 
 
-Results
+## Results
 
-Location and direction of flow of an event: <img width="499" alt="Screen Shot 2023-01-11 at 12 23 01 PM" src="https://user-images.githubusercontent.com/99933354/211910053-5f3992ea-4e89-4622-a24e-96c7c2977c14.png">
+Location and direction of flow of an event: 
 
-Distribution of Velocities on Mt Rainier, Mt Hood, and Mt St Helens: 
+<img width="499" alt="Screen Shot 2023-01-11 at 12 23 01 PM" src="https://user-images.githubusercontent.com/99933354/211910053-5f3992ea-4e89-4622-a24e-96c7c2977c14.png">
+
+## Distribution of Velocities on Mt Rainier, Mt St Helens, and Mt Hood: 
+
+<img width="686" alt="Screen Shot 2023-01-11 at 2 11 18 PM" src="https://user-images.githubusercontent.com/99933354/211928960-6d0742a8-92d5-4c4d-9c3d-871e58560492.png">
