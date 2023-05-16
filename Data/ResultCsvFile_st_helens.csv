@@ -1,0 +1,60 @@
+Date,Time,Unnamed: 2,Seismic,GUAC,Remarks
+2014-05-15,01:47:00,01:56:00,x,,Avalanche on East Side contained on Edifice (see https://www.pnsn.org/blog/2014/05/15/warm-weather-triggers-snow-avalanches-at-st-helens)
+2014-05-14,21:44:00,21:48:00,x,,"Avalanche on East Side (Entirely above EDM, see https://www.pnsn.org/blog/2014/05/15/warm-weather-triggers-snow-avalanches-at-st-helens)"
+2017-02-09,03:19:30,03:26:00,x,,Probable avalanche (UW sites out)
+2017-02-09,09:51:00,10:08:00,x,,Confirmed avalanche from Shoestring? (UW sites out) (see photos
+2017-02-09,11:01:00,11:11:00,x,,Probable avalanche (UW sites out)
+2017-02-20,05:28:45,05:36:00,x,,Probable avalanche (UW sites out)
+2019-05-07,17:35:30,17:37:00,x,x,Contained within crater
+2020-01-06,23:03:00,23:15:00,x,,Avalanche on East Side? (see MSH_20200106_avalanche.py)
+2020-04-19,19:51:00,19:52:00,x,x,"Nice signal, but SUG was out."
+2020-08-12,21:19:00,,,,Reported rockfall from Pumice Plain
+2020-08-21,19:15:00,,x,,GUAC not operating properly.  Flow likely contained within crater.
+2020-10-23,22:00:00,01:30:00,x,,"North and South Fork Toutle, see usfr and hoax afm, see log entry"
+2020-10-12,04:19:00,05:30:00,x,,Just down south fork Toutle
+2020-10-13,16:10:00,17:30:00,x,,Just down south fork Toutle
+2021-02-01,10:54:00,11:06:00,x,,Avalanche on East Side (see MSH_20210201_avalanche.py)
+2021-02-03,05:42:00,06:01:00,,,Avalanche on East Side (see MSH_20210203_avalanche.py)
+2021-02-15,04:21:30,04:23:00,x,,Avalanche on East Side (minor)
+2021-05-29,13:01:00,13:02:00,x,x,Poorly detected on GUAC
+2021-06-27,02:16:00,02:22:00,x,,debris flow signal inside the crater (first with new HOA/SHW/EDM)
+2021-07-18,05:10:30,05:14:00,x,,"I have no idea, but it’s a high amplitude signal.  And there were a bunch of others over that summer"
+2021-08-24,03:54:00,03:57:30,x,,"I have no idea, but it’s a high amplitude signal.  And there were a bunch of others over that summer"
+2021-08-24,09:18:30,09:20:00,x,,rockfall?
+2021-09-03,21:31:00,21:36:00,x,,"I have no idea, but it’s a high amplitude signal.  And there were a bunch of others over that summer"
+2021-09-18,05:10:00,10:30:00,x,,NF Toutle and SF Toutle
+2021-09-18,13:15:00,19:55:00,x,,NF Toutle (mostly)
+2021-09-19,03:15:00,07:30:00,x,,Mostly down NF Toutle and SF Toutle
+2021-09-27,08:30:00,10:15:00,x,,Mostly SF Toutle
+2021-09-27,05:35:00,06:50:00,x,,Mostly SF Toutle
+2021-09-30,13:40:00,14:30:00,x,,SF Toutle
+2021-09-30,14:40:00,20:20:00,x,,"Unknown, maybe SF Toutle between 17:30-18:35"
+2021-10-29,03:00:00,06:00:00,x,,Closest to SHW (not obviously down the SF)
+2021-10-29,08:30:00,12:00:00,x,,NF Toutle
+2021-11-08,03:58:00,04:00:00,x,x,Avalanche off east wall?  May have some change in backazimuth. (>2 Pa peak amp)
+2021-11-17,06:55:00,07:30:00,x,,"Some kind of glacial outburst or debris flow high in the drainage.  Appears to move to Loowit, then nothing."
+2021-12-11,16:10:00,16:14:00,x,,some east side event
+2021-12-15,14:30:30,14:16:00,x,,some east side thing
+2021-12-22,20:06:00,20:11:00,x,,NW side avalanche?
+2021-12-22,20:31:00,20:39:00,x,,2 avalanches
+2021-12-22,21:19:00,21:28:00,x,,E side avalanche
+2022-01-03,05:26:00,05:32:00,x,,E side avalanche (SEP and LOO out)
+2022-01-06,13:31:00,13:54:00,x,,SE side (BIG). Verified Shoestring Notch (see photos)
+2022-01-06,16:36:00,16:40:00,x,,NW side avalanche?
+2022-01-06,17:16:30,17:32:00,x,,E side avalanche (BIG) https://nwac.us/public-obs/9737/ https://nwac.us/public-obs/9849/ (see photos)
+2022-01-06,19:18:00,19:21:00,x,,NW side avalanche?
+2022-03-01,11:17:00,11:21:00,x,,likely avalanche? NWAC avalanche advisory up (atmospheric river event)
+2022-02-28,16:34:00,16:42:00,x,,;ikely avalanche? NWAC avalanche advisory up (atmospheric river event)
+2022-02-28,16:17:30,16:21:30,x,,maybe avalanche
+2022-03-05,21:00:10,21:02:00,x,,Verified D2.5 avlalanche (https://nwac.us/public-obs/12233/) Only a small signal on HSR
+2022-04-21,11:11:00,11:20:00,x,,Avalanche off east wall?
+2022-05-14,20:53:00,21:02:00,x,,East side avalanche
+2022-05-14,21:56:00,22:01:00,x,,East side avalanche
+2022-05-15,00:55:30,01:02:00,x,,East side avalanche
+2022-05-16,01:03:00,01:10:00,x,,East side avalanche
+2022-05-16,22:08:30,22:12:00,x,x,NW dome into crater (amp locs + infrasound + camera images)
+2022-05-17,10:27:00,10:29:00,x,,Probable avalanche
+2022-05-17,14:45:30,14:47:00,x,,Probable avalanche
+2022-09-01,20:46:00,20:47:00,x,,East wall rockfall (verified by field personnel)
+2022-09-01,20:55:00,20:56:00,x,,NE wall rockfall (verified by field personnel)
+2022-09-03,20:52:00,20:55:00,x,,Rockfall east wall (photo by Westby)
