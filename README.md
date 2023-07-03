@@ -9,3 +9,16 @@ conda env create environment.yml
 
 Data: Data is from the Pacific Northwest Seismic Network. The catalog can be found here and the station and waveform data can be downloaded using pnwstore Client. 
 
+<h2>Understanding the Repo</h2>
+<table>
+  <tr>
+    <th>Filename(s)</th>
+    <th>Directory</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>wes_events_r.json,wes_events_st.json</td>
+    <td>Data/</td>
+    <td>Starttimes of labeled events</td>
+  </tr>
+  <tr>
