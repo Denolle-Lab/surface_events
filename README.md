@@ -12,8 +12,8 @@ Data: Data is from the Pacific Northwest Seismic Network. The catalog can be fou
 <h2>Understanding the Repo</h2>
 <table>
   <tr>
-    <th>Filename(s)</th>
-    <th>Directory</th>
+    <th>Folder or Filename(s)</th>
+    <th>Directory (if applicable)</th>
     <th>Description</th>
   </tr>
   <tr>
@@ -32,19 +32,25 @@ Data: Data is from the Pacific Northwest Seismic Network. The catalog can be fou
     <td>Simplest model of a grid search such as the one used in this workflow</td>
   </tr>
   <tr>  
-    <td>curves_freq_data1262743Mt_Rainier.png,loc_direction3179368Mt_Rainier.png,
-      wiggles1262743Mt_Rainier.png,curves_freq_data3179368Mt_Rainier.png,
-      psd1262743Mt_Rainier.png,wiggles1267698Mt_Rainier.png,Event_Data.csv,velsMt_Hood.png,
-      wiggles3179093Mt_St_Helens.png,heatmap1262743Mt_Rainier.png,velsMt_Rainier.png,
-      wiggles3179368Mt_Rainier.png,loc_direction1262743Mt_Rainier.png,velsMt_St_Helens.png</td>
     <td>Poster_Figs/</td>
+    <td> </td>
     <td>Figures made for AGU 2022 poster</td>
   </tr>
   <tr>
-    <td>Surface_Event_Directivity_Updated_Rainier_fig_8.ipynb</td>
+    <td>Surface_Event_Directivity_Updated_Rainier_fig_8.ipynb,
+    Surface_Event_Directivity_Updated_St_Helens_figs_8.ipynb,
+    Surface_event_Directivity_Updated_Hood.ipynb</td>
     <td> </td>
-    <td> runs workflow for Labeled Mount Rainier Events and makes figures like Figure 8</td>
+    <td> runs workflow for labeled events on respective volcano and produces figures like Figure 8</td>
   </tr>
+  <tr>
+    <td> Event_Analysis_figs_2,4,5.ipynb</td>
+    <td> </td>
+    <td> Creates time series of events, velocity distribution, 
+      and location distribution at each volcano </td>
+  </tr>
+  
+  
   
   
 
