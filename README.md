@@ -49,6 +49,21 @@ Data: Data is from the Pacific Northwest Seismic Network. The catalog can be fou
     <td> Creates time series of events, velocity distribution, 
       and location distribution at each volcano </td>
   </tr>
+  <tr>  
+    <td>Wes_Labeled_FinaL_Figs/</td>
+    <td>Analysis_Data</td>
+    <td>Figures like fig 8 for all labeled events consisting of wwaveforms, label, and directivity</td>
+  </tr>
+  <tr>  
+    <td>Wes_Events_Rainier_Figs,Wes_Events_St_Figs/</td>
+    <td>Analysis_Data</td>
+    <td>Analysis Figures of the labeled events</td>
+  </tr>
+  <tr>  
+    <td>All_Events_Rainier_Figs,All_Event_St_Helens_Figs,All_Events_Hood_Figs</td>
+    <td>Analysis_Data</td>
+    <td>Cosine curve fit to the frequency versus azimuth plot for all events at the respesctive volcano</td>
+  </tr>
   
   
   
