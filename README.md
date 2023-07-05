@@ -7,7 +7,12 @@ This project is licensed under the MIT Public License.
 Environment: 
 conda env create environment.yml
 
-Data: Data is from the Pacific Northwest Seismic Network. The catalog can be found here and the station and waveform data can be downloaded using pnwstore Client. 
+Data: 
+- Surface Event Seismic Data is from the Pacific Northwest Seismic Network. The catalog can be found [here](https://seismica.library.mcgill.ca/article/view/368) and the station and waveform data can be downloaded using pnwstore Client. 
+- DEM data is obtained from the University of Washington and can be found [here](https://gis.ess.washington.edu/data/raster/tenmeter/). It is processed and prepared for the workflow in Data/DEM_data/Volc_Dem.ipynb
+- Labels to certain events are obtained from Wes Thelen of the Cascade Volcano Observatory
+https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWfRGg/edit#gid=619751142
+  
 
 <h2>Understanding the Repo</h2>
 <table>
