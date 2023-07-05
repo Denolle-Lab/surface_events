@@ -22,3 +22,25 @@ Data: Data is from the Pacific Northwest Seismic Network. The catalog can be fou
     <td>Starttimes of labeled events</td>
   </tr>
   <tr>
+    <td>Equake_test_AK.ipynb,Equake_test_deep_local.ipynb</td>
+    <td>Equake_Tests/</td>
+    <td>Analysis run on earthquake to ensure that it fails</td>
+  </tr>
+  <tr>
+    <td>Grid_Search_Model.ipynb</td>
+    <td>NA/</td>
+    <td>Simplest model of a grid search such as the one used in this workflow</td>
+  </tr>
+  <tr>  <td>curves_freq_data1262743Mt_Rainier.png,loc_direction3179368Mt_Rainier.png,wiggles1262743Mt_Rainier.png,curves_freq_data3179368Mt_Rainier.png,psd1262743Mt_Rainier.png,wiggles1267698Mt_Rainier.png,Event_Data.csv,velsMt_Hood.png,wiggles3179093Mt_St_Helens.png,heatmap1262743Mt_Rainier.png,velsMt_Rainier.png,wiggles3179368Mt_Rainier.png,loc_direction1262743Mt_Rainier.png,velsMt_St_Helens.png</td>
+    <td>Poster_Figs/</td>
+    <td>Figures made for AGU 2022 poster</td>
+  </tr>
+  <tr>
+    <td>Surface_Event_Directivity_Updated_Rainier_fig_8.ipynb</td>
+    <td> /</td>
+    <td> runs workflow for Labeled Mount Rainier Events and makes figures like Figure 8</td>
+  </tr>
+  
+  
+
+
