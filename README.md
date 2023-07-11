@@ -1,5 +1,7 @@
 # Surface Events
-Surface events such as Avalanches, rockfalls, debris flows, etc. are prevalent on the Cascade Volcanoes in the Pacific Northwest and are hazardous to the surrounding area. They are frequent yet do not have the same automated analysis as earthquakes. Using seismic data from the Pacific Northwest Seismic Network (PNSN), we aim to locate these events with a grid search model and derive the flow velocities and directions of these events using a Doppler shift algorithm.
+Surface events such as Avalanches, rockfalls, debris flows, etc. are prevalent on the Cascade Volcanoes in the Pacific Northwest and are hazardous to the surrounding area. They are frequent yet do not have the same automated analysis as earthquakes. Using seismic data from the Pacific Northwest Seismic Network (PNSN), we aim to locate these events with a grid search model and derive the flow velocities and directions of these events using a Doppler shift algorithm. 
+
+
 
 This project is licensed under the MIT Public License.
 
@@ -19,7 +21,7 @@ https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWf
 <h2>Understanding the Repo</h2>
 <table>
   <tr>
-    <th>Folder or Filename(s)</th>
+    <th>Folder Filename(s) or Notebook</th>
     <th>Directory (if applicable)</th>
     <th>Description</th>
   </tr>
@@ -48,7 +50,7 @@ https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWf
     Surface_Event_Directivity_Updated_St_Helens_figs_8.ipynb, 
     Surface_event_Directivity_Updated_Hood.ipynb</td>
     <td> </td>
-    <td> runs workflow for labeled events on a respective volcano and produces figures like Figure 8</td>
+    <td> creates Wes_Labeled_FinaL_Figs </td>
   </tr>
   <tr>
     <td> Event_Analysis_figs_245.ipynb</td>
