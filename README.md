@@ -5,7 +5,9 @@ This project is licensed under the MIT Public License.
 
 ## Dependencies
 Environment: 
+```sh
 conda env create environment.yml
+```
 
 Data: 
 - Surface Event Seismic Data is from the Pacific Northwest Seismic Network. The catalog can be found [here](https://seismica.library.mcgill.ca/article/view/368) and the station and waveform data can be downloaded using pnwstore Client. 
