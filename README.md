@@ -1,5 +1,5 @@
 # Surface Events
-Surface events such as Avalanches, rockfalls, debris flows, etc. are prevalent on the Cascade Volcanoes in the Pacific Northwest and are hazardous to the surrounding area. They are frequent, yet do not have the same automated analysis that earthquakes do. Using seismic data from the Pacific Northwest Seismic Network (PNSN), we aim to locate these events with a grid search model and derive the flow velocities and directions of these events using a doppler shift algorithm.
+Surface events such as Avalanches, rockfalls, debris flows, etc. are prevalent on the Cascade Volcanoes in the Pacific Northwest and are hazardous to the surrounding area. They are frequent yet do not have the same automated analysis as earthquakes. Using seismic data from the Pacific Northwest Seismic Network (PNSN), we aim to locate these events with a grid search model and derive the flow velocities and directions of these events using a Doppler shift algorithm.
 
 This project is licensed under the MIT Public License.
 
@@ -42,11 +42,11 @@ https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWf
     <td>Figures made for AGU 2022 poster</td>
   </tr>
   <tr>
-    <td>Surface_Event_Directivity_Updated_Rainier_fig_8.ipynb,
-    Surface_Event_Directivity_Updated_St_Helens_figs_8.ipynb,
+    <td>Surface_Event_Directivity_Updated_Rainier_fig_8.ipynb, 
+    Surface_Event_Directivity_Updated_St_Helens_figs_8.ipynb, 
     Surface_event_Directivity_Updated_Hood.ipynb</td>
     <td> </td>
-    <td> runs workflow for labeled events on respective volcano and produces figures like Figure 8</td>
+    <td> runs workflow for labeled events on a respective volcano and produces figures like Figure 8</td>
   </tr>
   <tr>
     <td> Event_Analysis_figs_2,4,5.ipynb</td>
@@ -57,17 +57,17 @@ https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWf
   <tr>  
     <td>Wes_Labeled_FinaL_Figs/</td>
     <td>Analysis_Data</td>
-    <td>Figures like fig 8 for all labeled events consisting of wwaveforms, label, and directivity</td>
+    <td>Figures like fig 8 for all labeled events consisting of waveforms, label, and directivity</td>
   </tr>
   <tr>  
-    <td>Wes_Events_Rainier_Figs,Wes_Events_St_Figs/</td>
+    <td>Wes_Events_Rainier_Figs, Wes_Events_St_Figs/</td>
     <td>Analysis_Data</td>
     <td>Analysis Figures of the labeled events</td>
   </tr>
   <tr>  
-    <td>All_Events_Rainier_Figs,All_Event_St_Helens_Figs,All_Events_Hood_Figs</td>
+    <td>All_Events_Rainier_Figs, All_Event_St_Helens_Figs, All_Events_Hood_Figs</td>
     <td>Analysis_Data</td>
-    <td>Cosine curve fit to the frequency versus azimuth plot for all events at the respesctive volcano</td>
+    <td>Cosine curve fit the frequency versus azimuth plot for all events at the respective volcano</td>
   </tr>
   
   
