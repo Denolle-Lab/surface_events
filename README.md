@@ -51,7 +51,7 @@ https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWf
     <td> runs workflow for labeled events on a respective volcano and produces figures like Figure 8</td>
   </tr>
   <tr>
-    <td> Event_Analysis_figs_2,4,5.ipynb</td>
+    <td> Event_Analysis_figs_245.ipynb</td>
     <td> </td>
     <td> Creates time series of events, velocity distribution, 
       and location distribution at each volcano </td>
