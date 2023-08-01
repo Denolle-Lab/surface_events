@@ -1,2 +1,0 @@
-event_ID,location_latitude,location_longitude,location_uncertainty(m),origin_time,direction(degrees),direction_sharpness(degrees),direction_snr(degrees),duration(sec),params_std_deviation,velocity(m/s),number_of_stations
-1262743,46.85804107831696,-121.75477189238259,3500.0,2012-10-01T21:49:11.600000Z,71.09805244089634,67.33952988391857,69.49022340197743,25.59000000000001,"0.133807486,0.304700142,0.100225157",127.50024653720396,5
