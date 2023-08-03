@@ -1,38 +1,41 @@
+# Scripts that runs all functions to download event waveforms
+
+
+# Import modules
 import sys
-sys.path.append('/data/wsd01/pnwstore/')
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import Figure
-import numpy as np
-import pandas as pd
-import obspy
-from obspy.core import UTCDateTime
-from obspy.clients.fdsn.client import Client
-from obspy.geodetics import *
-from obspy.signal.cross_correlation import *
-from obspy.signal.trigger import classic_sta_lta
-from obspy.core.utcdatetime import UTCDateTime
-import requests
-import glob
-from pnwstore.mseed import WaveformClient
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-import scipy
-from scipy import optimize
-from scipy.optimize import curve_fit
-from geopy import distance
-import datetime
-import rasterio as rio
-from rasterio.plot import show
-from rasterio.merge import merge
-import richdem as rd
-from pathlib import Path
-from pyproj import Proj,transform,Geod
-import os 
-from scipy.interpolate import RectBivariateSpline
-import json
-import matplotlib
+sys.path.append('/data/wsd01/pnwstore/') # this is where the data
+# import matplotlib.pyplot as plt
+# from matplotlib.pyplot import Figure
+# import numpy as np
+# import pandas as pd
+# import obspy
+# from obspy.core import UTCDateTime
+# from obspy.clients.fdsn.client import Client
+# from obspy.geodetics import *
+# from obspy.signal.cross_correlation import *
+# from obspy.signal.trigger import classic_sta_lta
+# from obspy.core.utcdatetime import UTCDateTime
+# import requests
+# import glob
+# from pnwstore.mseed import WaveformClient
+# from mpl_toolkits.axes_grid1 import make_axes_locatable
+# import scipy
+# from scipy import optimize
+# from scipy.optimize import curve_fit
+# from geopy import distance
+# import datetime
+# import rasterio as rio
+# from rasterio.plot import show
+# from rasterio.merge import merge
+# import richdem as rd
+# from pathlib import Path
+# from pyproj import Proj,transform,Geod
+# import os 
+# from scipy.interpolate import RectBivariateSpline
+# import json
+# import matplotlib
 
 class run_event:
-    
     def __init__(self, associated_volcano, event_id, time, fs):
         self.time = time
         self.event_id = event_id
