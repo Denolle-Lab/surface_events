@@ -8,10 +8,13 @@ dependencies:
   - numpy
   - pandas
   - scipy
-  - pip
   - obspy
   - ipykernel
   - IPython
-  - tsfresh
   - h5py
-  - eqcorrscan
+  - geopy
+  - pip
+  - pip:
+    - seisbench
+    - elep==0.0.2
+    - tqdm
