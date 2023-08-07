@@ -13,6 +13,7 @@ dependencies:
   - IPython
   - h5py
   - geopy
+  - rasterio
   - pip
   - pip:
     - seisbench
