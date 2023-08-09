@@ -2,7 +2,8 @@ name: seismo_exo
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.10
+  - wget
   - jupyter
   - matplotlib
   - numpy
