@@ -3,20 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - wget
-  - jupyter
-  - matplotlib
-  - numpy
-  - pandas
-  - scipy
-  - obspy
-  - ipykernel
-  - IPython
-  - h5py
-  - geopy
-  - rasterio
   - pip
   - pip:
     - seisbench
     - elep==0.0.2
-    - tqdm
+    - geopy
+    - rasterio
+  - wget
+  - ipykernel
+  - IPython
