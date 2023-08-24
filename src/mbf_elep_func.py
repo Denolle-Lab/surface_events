@@ -18,11 +18,13 @@ import matplotlib.pyplot as plt
 device = torch.device("cpu")
 
 
-def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, t_before):
+def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
+               t_before=15,t_around=5,thr=0.01):
     """"
     This function takes a array of stream, a list of stations, a list of ML
     models and apply these models to the data, predict phase picks, and
     return an array of picks .
+    evt_data: obspy stream with all data
     """
     twin = 6000
     nsta = len(list_sta)
@@ -30,16 +32,16 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, t_bef
     stas = []
     for i in range(len(list_sta)):
         stream = evt_data.select(station=list_sta[i])
-        if len(stream) < 3: continue
-        # copy stream to 2 components, zero the missing data.
-        tr3 = stream[0].copy()# assumed to be the vertical
-        tr2 = stream[0].copy(); tr2.stats.channel = stream[0].stats.channel[0:2]+"N"
-        tr1 = stream[0].copy(); tr1.stats.channel = stream[0].stats.channel[0:2]+"E"
-        tr1.data = np.zeros(len(stream[0].data))
-        tr2.data = np.zeros(len(stream[0].data))
-        stream = obspy.Stream(traces=[tr1, tr2, tr3])
-        # convert Stream into seisbench-friendly array    
-        # fill in big array and order data ZNE
+        if len(stream) < 3:
+            # copy stream to 2 components, zero the missing data.
+            tr3 = stream[0].copy()# assumed to be the vertical
+            tr2 = stream[0].copy(); tr2.stats.channel = stream[0].stats.channel[0:2]+"N"
+            tr1 = stream[0].copy(); tr1.stats.channel = stream[0].stats.channel[0:2]+"E"
+            tr1.data = np.zeros(len(stream[0].data))
+            tr2.data = np.zeros(len(stream[0].data))
+            stream = obspy.Stream(traces=[tr1, tr2, tr3])
+            # convert Stream into seisbench-friendly array    
+            # fill in big array and order data ZNE
         bigS[i,0,:] = stream[2].data[:-1]
         bigS[i,1,:] = stream[1].data[:-1]
         bigS[i,2,:] = stream[0].data[:-1]
@@ -48,7 +50,6 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, t_bef
 
     # allocating memory for the ensemble predictions
     nwin,twin,nsta=bigS.shape[1],bigS.shape[-1],len(list_sta)
-    print(nwin,twin,nsta)
     batch_pred =np.zeros(shape=(len(list_models),nsta,twin)) 
     batch_pred_mbf =np.zeros(shape=(len(list_models),nsta,twin))
     # evaluate
@@ -67,7 +68,7 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, t_bef
     for ii, imodel in enumerate(list_models):
         batch_pred[ii, :, :] = imodel(data_tt.to(device))[1].detach().cpu().numpy()[:, :]
 
-
+    
     ############# Multi-band Workflow ########
     windows_std = np.zeros(shape=(nsta, MBF_paras["nfqs"], 3, twin), dtype= np.float32)
     windows_max = np.zeros(shape=( nsta, MBF_paras["nfqs"], 3, twin), dtype= np.float32)
@@ -113,29 +114,25 @@ def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, t_bef
     # all waveforms starts - 15s from reference picks
     # allow for +/- 10 seconds around reference picks.
     sfs = MBF_paras["fs"]
-    t_around = 5
     istart = t_before*sfs - t_around*sfs
-    iend = t_before*sfs + t_around*sfs
-    print("t_before",t_before,"sfs",sfs)
-    print(istart,iend)
+    iend = np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
     for ista in range(nsta):# should be 1 in this context
         # 0 for P-wave
         smb_pred[ista, :] = ensemble_semblance(batch_pred[:, ista, :],\
                                              paras_semblance)
-        plt.figure()
-        plt.plot(batch_pred[:, ista, :].T)
-        plt.plot(smb_pred[ista, :])
-        plt.show()
-        imax = np.argmax(smb_pred[ ista, :]) 
-        if smb_pred[ista, imax] > 0:
+        imax = np.argmax(smb_pred[ ista,istart:iend]) 
+        # print("max probab",smb_pred[ista,imax+istart])
+        if smb_pred[ista, imax+istart] > thr:
             smb_peak[ista] = float((imax)/sfs)-t_around
-            # 0 for P-wave
+
+ 
+        # 0 for P-wave
         smb_pred_mbf[ista, :] = ensemble_semblance(batch_pred_mbf[:, ista, :], paras_semblance)
         imax = np.argmax(smb_pred_mbf[ista, istart : iend])# search for peak in the first 80 seconds
-        if smb_pred_mbf[ista, imax] > 0:
-            smb_peak_mbf[ista] = float((imax)/sfs)-t_around
+        # print("max probab",smb_pred[ista,imax+istart])
+        if smb_pred_mbf[ista, imax+istart] > thr:
+            smb_peak_mbf[ista] = float(imax/sfs)-t_around
 
-        print(smb_peak[ista],smb_peak_mbf[ista])
 
     # below return the time of the first pick aas a list over stations
     return smb_peak, smb_peak_mbf
