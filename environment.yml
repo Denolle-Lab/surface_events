@@ -2,16 +2,13 @@ name: seismo_exo
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
-  - jupyter
-  - matplotlib
-  - numpy
-  - pandas
-  - scipy
+  - python=3.10
   - pip
-  - obspy
+  - pip:
+    - seisbench
+    - elep==0.0.2
+    - geopy
+    - rasterio
+  - wget
   - ipykernel
   - IPython
-  - tsfresh
-  - h5py
-  - eqcorrscan

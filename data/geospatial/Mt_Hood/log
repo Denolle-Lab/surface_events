@@ -1,0 +1,2 @@
+200209061209   4   194     0ehiebent FB45121 = con(isnull(selectpolygon(b45121, *, inside)), focalmean(b45121, rectangle, 3, 1), b45121)
+20020927 850   2    19     0ehiebent copy fb45121 m45121/m45121
