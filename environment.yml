@@ -9,6 +9,7 @@ dependencies:
     - elep==0.0.2
     - geopy
     - rasterio
+    - joblib
   - wget
   - ipykernel
   - IPython

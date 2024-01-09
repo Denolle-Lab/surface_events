@@ -18,6 +18,53 @@ Data:
 https://docs.google.com/spreadsheets/d/1tickhlEZjjYVUwvWrW2tbsCKyLKZY1oLjJuoKuWfRGg/edit#gid=619751142
   
 
+For each surface event, the workflow analysis workflow consists in:
+1. Waveform download for each event on each volcano given the PNSN pick times of "su" events.
+2. Data pre-processing to trim the data within 2-12 Hz and remove outliers.
+3. phase picking using transfer-learned model (Ni et al, 2023)
+4. centroid picking estimate on the envelope.
+5. event location using 1D grid search
+6. directivity measurements (velocity and direction) using Doppler effects and 
+7. gathering of the data into a CSV data frame.
+
+├── src
+│   ├── old
+│   │   ├── all old scripts from Francesca' 2022, 2023 work
+│   ├── RedPy_Clustering
+|   |   ├── Scripts for @Nicholas Smoczyk to pick
+│   ├── mbf_elep_func.py
+│   ├── utils.py
+│   ├── ML_Picker_Benchmark.ipynb
+├── data
+│   ├── Redpy  
+|   |   ├── CSV files for @Nicholas Smoczyk to pick
+│   ├── events  
+|   |   ├── event_ids_r.json
+|   |   ├── event_ids_st.json
+|   |   ├── labels_rainier.json
+|   |   ├── labels_st_helens.json
+|   |   ├── wes_event_ids_r.json
+|   |   ├── wes_event_ids_st.json
+│   ├── bb_elep_picks_su.csv
+│   ├── mbf_elep_picks_su.csv
+│   ├── geospatial  
+|   |   ├── Mt_Adams/
+|   |   ├── Mt_Baker/
+|   |   ├── Mt_Hood/
+|   |   ├── Mt_Rainier/
+|   |   ├── Mt_St_Helens/
+|   |   ├── Volc_Dem.ipynb
+├── plot
+│   ├── *pdf
+│   ├── *png
+├── READNE.md
+├── .vscode
+├── environment.yml
+├── LICENSE.md
+└── .gitignore
+
+
+
 <h2>Understanding the Repo</h2>
 <table>
   <tr>
