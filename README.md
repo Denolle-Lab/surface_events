@@ -27,6 +27,7 @@ For each surface event, the workflow analysis workflow consists in:
 6. directivity measurements (velocity and direction) using Doppler effects and 
 7. gathering of the data into a CSV data frame.
 
+```
 ├── src
 │   ├── old
 │   │   ├── all old scripts from Francesca' 2022, 2023 work
@@ -62,7 +63,7 @@ For each surface event, the workflow analysis workflow consists in:
 ├── environment.yml
 ├── LICENSE.md
 └── .gitignore
-
+```
 
 
 <h2>Understanding the Repo</h2>
