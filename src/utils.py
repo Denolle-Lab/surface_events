@@ -4,11 +4,12 @@ from obspy.signal.cross_correlation import correlate
 from obspy.core import UTCDateTime
 
 #define a function that calculates picktimes at each station
+
 def pick_time(time, ref_env, data_env_dict, st, t_diff, t_before, fs):
     pick_times,offsets, starttimes = [],[],[]
     for i,key in enumerate(data_env_dict):
         starttimes.append(st[i].stats.starttime)
-        xcor = correlate(data_env_dict[key],ref_env,int(50*fs))
+        xcor = correlate(data_env_dict[key], ref_env,int(50*fs))
         index = np.argmax(xcor)
         cc = round(xcor[index],9) #correlation coefficient
         shift = 50*fs-index #how much it is shifted from the reference envelope
@@ -17,7 +18,7 @@ def pick_time(time, ref_env, data_env_dict, st, t_diff, t_before, fs):
         pick_times.append(p+t_diff[key])
         offsets.append(offset_time + t_diff[key])
     return pick_times, offsets, starttimes
-    
+
 def shift(pick_times, offsets, starttimes, t_diff):
     shifts, vals =[],[]
     for i,ii in enumerate(t_diff):
@@ -28,6 +29,7 @@ def shift(pick_times, offsets, starttimes, t_diff):
     return shifts, vals
 
 # define functon that resamples the data
+
 def resample(st, fs):
     for i in st:
         i.detrend(type='demean')
@@ -38,8 +40,8 @@ def resample(st, fs):
 # define function to calculate number of surface events per month
 def events_per_month(starttimes, events):
     num_events = {}
-    for year in range (2001, 2021):
-        for month in range (1, 13):
+    for year in range(2001, 2021):
+        for month in range(1, 13):
             Nevt = []
             period = str(year)+"_"+str(month)
             t0 = UTCDateTime(year, month, 1)
@@ -57,10 +59,12 @@ def events_per_month(starttimes, events):
     return periods, num_of_events
 
 # define function to fit data to
+
 def test_func(theta, a,theta0, c):
     return a * np.cos(theta-theta0)+c
 
 # define a function to make plots of weighted data
+
 def weight_data(x_data,y_data,weight,test_func,v_s,stas):    
     #weighting the data
     tempx, tempy = [],[]

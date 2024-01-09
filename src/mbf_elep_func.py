@@ -13,9 +13,181 @@ import obspy
 from ELEP.elep.mbf_utils import make_LogFq, make_LinFq, rec_filter_coeff
 from ELEP.elep.mbf import MB_filter
 import matplotlib.pyplot as plt
+from joblib import Parallel, delayed
 
 
 device = torch.device("cpu")
+
+
+def apply_elep_das(evt_data, list_models, MBF_paras, paras_semblance, \
+              thr=0.01, device=device):
+    
+    """"
+    This function takes a array of stream, a list of stations, a list of ML
+    models and apply these models to the data, predict phase picks, and
+    return an array of picks .
+    evt_data: NDArray of DAS data: [channel,time stamp - 6000]
+    """
+    
+    twin = 6000
+    nsta = evt_data.shape[0]
+    bigS = np.zeros(shape=(evt_data.shape[0],3,evt_data.shape[1]))
+    for i in range(nsta):
+        bigS[i,0,:] = evt_data[i,:]
+        bigS[i,1,:] = np.zeros(twin)
+        bigS[i,2,:] = np.zeros(twin)
+
+    # allocating memory for the ensemble predictions
+    batch_pred_P =np.zeros(shape=(len(list_models),nsta,twin)) 
+    batch_pred_S =np.zeros(shape=(len(list_models),nsta,twin)) 
+    # evaluate
+    for imodel in list_models:
+        imodel.eval().to(device)
+        
+        
+    ######### Broadband workflow ################
+    crap2 = bigS.copy()
+    crap2 -= np.mean(crap2, axis=-1, keepdims= True) # demean data
+    # original use std norm
+    data_std = crap2 / np.std(crap2) + 1e-10
+    # could use max data
+    mmax = np.max(np.abs(crap2), axis=-1, keepdims=True)
+    data_max = np.divide(crap2, mmax, out=np.zeros_like(crap2), where = mmax!= 0)
+    
+    # to use the CPU
+    data_tt = torch.tensor(data_max, dtype=torch.float64)
+    print(data_tt.dtype)
+    
+    for ii, imodel in enumerate(list_models):
+        with torch.no_grad():
+            batch_pred_P[ii, :, :] = imodel(data_tt)[1].numpy()[:, :]
+            batch_pred_S[ii, :, :] = imodel(data_tt)[2].numpy()[:, :]
+
+
+    print("Picks predicted in broadband workflow")
+
+    smb_peak = np.zeros([nsta,2], dtype = np.float32)
+
+    # Pick the phase. 
+    # all waveforms are aligned to the reference picks.
+    # so all pick measurements will be made relative to the reference pick
+    # all waveforms starts - 15s from reference picks
+    # allow for +/- 10 seconds around reference picks.
+    sfs = MBF_paras["fs"]
+    istart = 0#125 # this is because of the FK filter issue.
+#     iend = np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
+      
+        ### BROADBAND ELEP
+    # 0 for P-wave
+    def process_p(ista,paras_semblance,batch_pred,istart):
+        crap = ensemble_semblance(batch_pred[0, :, ista, :], paras_semblance)
+        imax = np.argmax(crap[istart:]) 
+        if crap[imax+istart] > thr:
+            smb_peak = float((imax)/sfs)+istart/sfs #-t_around
+        return smb_peak
+
+
+    def process_s(ista,paras_semblance,batch_pred,istart):
+        crap=ensemble_semblance(batch_pred[1, :, ista, :], paras_semblance)
+        imax = np.argmax(crap[istart:]) 
+        if crap[imax+istart] > thr:
+            smb_peak = float((imax)/sfs)+istart/sfs #-t_around
+        return smb_peak
+
+    smb_peak[:,0] = np.array(Parallel(n_jobs=20)(delayed(process_p)(ista,paras_semblance,batch_pred,istart) for ista in range(nsta)))
+    smb_peak[:,1] = np.array(Parallel(n_jobs=20)(delayed(process_s)(ista,paras_semblance,batch_pred,istart) for ista in range(nsta)))
+    
+    
+    return smb_peak
+
+
+def apply_elep(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
+               t_before=15,t_around=5,thr=0.01):
+    """"
+    This function takes a array of stream, a list of stations, a list of ML
+    models and apply these models to the data, predict phase picks, and
+    return an array of picks .
+    evt_data: obspy stream with all data
+    """
+    twin = 6000
+    nsta = len(list_sta)
+    bigS = np.zeros(shape=(len(list_sta), 3, twin))
+    stas = []
+    for i in range(len(list_sta)):
+        stream = evt_data.select(station=list_sta[i])
+        if len(stream) < 3:
+            # copy stream to 2 components, zero the missing data.
+            tr3 = stream[0].copy()# assumed to be the vertical
+            tr2 = stream[0].copy(); tr2.stats.channel = stream[0].stats.channel[0:2]+"N"
+            tr1 = stream[0].copy(); tr1.stats.channel = stream[0].stats.channel[0:2]+"E"
+            tr1.data = np.zeros(len(stream[0].data))
+            tr2.data = np.zeros(len(stream[0].data))
+            stream = obspy.Stream(traces=[tr1, tr2, tr3])
+            # convert Stream into seisbench-friendly array    
+            # fill in big array and order data ZNE
+        bigS[i,0,:] = stream[2].data[:-1]
+        bigS[i,1,:] = stream[1].data[:-1]
+        bigS[i,2,:] = stream[0].data[:-1]
+        stas.append(list_sta[i])
+
+
+    # allocating memory for the ensemble predictions
+    nwin,twin,nsta=bigS.shape[1],bigS.shape[-1],len(list_sta)
+    batch_pred =np.zeros(shape=(len(list_models),nsta,twin)) 
+    # evaluate
+    for imodel in list_models:
+        imodel.eval()
+    ######### Broadband workflow ################
+    crap2 = bigS.copy()
+    crap2 -= np.mean(crap2, axis=-1, keepdims= True) # demean data
+    # original use std norm
+    data_std = crap2 / np.std(crap2) + 1e-10
+    # could use max data
+    mmax = np.max(np.abs(crap2), axis=-1, keepdims=True)
+    data_max = np.divide(crap2 , mmax,out=np.zeros_like(crap2), where=mmax!=0)
+    data_tt = torch.Tensor(data_max)
+    # batch predict picks.
+    for ii, imodel in enumerate(list_models):
+        batch_pred[ii, :, :] = imodel(data_tt.to(device))[1].detach().cpu().numpy()[:, :]
+
+    
+    # smb_pred = np.zeros([nsta, twin], dtype = np.float32)
+    smb_peak = np.zeros([nsta], dtype = np.float32)
+
+    # Pick the phase. 
+
+    sfs = MBF_paras["fs"]
+    istart = t_before*sfs - t_around*sfs
+    # iend = np.min((t_before*sfs + t_around*sfs,smb_pred.shape[1]))
+
+    # BROADBAND ELEP
+    def process_p(ista,paras_semblance,batch_pred,istart):
+        crap = ensemble_semblance(batch_pred[:, ista, :], paras_semblance)
+        imax = np.argmax(crap[istart:])
+        if crap[imax+istart] > thr:
+            smb_peak = float((imax)/sfs)+istart/sfs #-t_around
+        return smb_peak
+
+    # all waveforms are aligned to the reference picks.
+    # so all pick measurements will be made relative to the reference pick
+    # all waveforms starts - 15s from reference picks
+    # allow for +/- 10 seconds around reference picks.
+    # for ista in range(nsta):# should be 1 in this context
+    #     # 0 for P-wave
+    #     smb_pred[ista, :] = ensemble_semblance(batch_pred[:, ista, :],\
+    #                                          paras_semblance)
+    #     imax = np.argmax(smb_pred[ ista,istart:iend]) 
+    #     # print("max probab",smb_pred[ista,imax+istart])
+    #     if smb_pred[ista, imax+istart] > thr:
+    #         smb_peak[ista] = float((imax)/sfs)-t_around
+
+    smb_peak[:] = np.array(Parallel(n_jobs=8)\
+                           (delayed(process_p)(ista,paras_semblance,\
+                                               batch_pred,istart) for ista in range(nsta)))
+    print("smp_peak")
+    print(smb_peak)
+    # below return the time of the first pick aas a list over stations
+    return smb_peak
 
 
 def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
