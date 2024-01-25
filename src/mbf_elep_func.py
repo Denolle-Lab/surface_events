@@ -115,7 +115,7 @@ def apply_elep(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     stas = []
     for i in range(len(list_sta)):
         stream = evt_data.select(station=list_sta[i])
-        if len(stream) < 3:
+        if (len(stream) < 3) | (len(stream[0].data) < 5999):
             # copy stream to 2 components, zero the missing data.
             tr3 = stream[0].copy()# assumed to be the vertical
             tr2 = stream[0].copy(); tr2.stats.channel = stream[0].stats.channel[0:2]+"N"
@@ -125,10 +125,17 @@ def apply_elep(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
             stream = obspy.Stream(traces=[tr1, tr2, tr3])
             # convert Stream into seisbench-friendly array    
             # fill in big array and order data ZNE
-        bigS[i,0,:] = stream[2].data[:-1]
-        bigS[i,1,:] = stream[1].data[:-1]
-        bigS[i,2,:] = stream[0].data[:-1]
-        stas.append(list_sta[i])
+        if ((stream[0].data.shape[0] > 5999) & (stream[1].data.shape[0] > 5999)  \
+            & (stream[2].data.shape[0] > 5999) ):
+            bigS[i,0,:] = stream[2].data[:-1]
+            bigS[i,1,:] = stream[1].data[:-1]
+            bigS[i,2,:] = stream[0].data[:-1]
+            stas.append(list_sta[i])
+        else:
+            bigS[i,0,:] = np.zeros(6000)
+            bigS[i,1,:] = np.zeros(6000)
+            bigS[i,2,:] = np.zeros(6000)
+            stas.append(list_sta[i])
 
 
     # allocating memory for the ensemble predictions
@@ -164,6 +171,7 @@ def apply_elep(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     def process_p(ista,paras_semblance,batch_pred,istart):
         crap = ensemble_semblance(batch_pred[:, ista, :], paras_semblance)
         imax = np.argmax(crap[istart:])
+        smb_peak=0
         if crap[imax+istart] > thr:
             smb_peak = float((imax)/sfs)+istart/sfs #-t_around
         return smb_peak
@@ -181,13 +189,16 @@ def apply_elep(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
     #     if smb_pred[ista, imax+istart] > thr:
     #         smb_peak[ista] = float((imax)/sfs)-t_around
 
-    smb_peak[:] = np.array(Parallel(n_jobs=8)\
+    smb_peak0 = np.array(Parallel(n_jobs=8)\
                            (delayed(process_p)(ista,paras_semblance,\
                                                batch_pred,istart) for ista in range(nsta)))
-    print("smp_peak")
-    print(smb_peak)
+
     # below return the time of the first pick aas a list over stations
-    return smb_peak
+    if smb_peak0:
+        return smb_peak0
+    else:
+        return np.zeros(nsta)
+    # return smb_peak
 
 
 def apply_mbf(evt_data, list_sta, list_models, MBF_paras, paras_semblance, \
