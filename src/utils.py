@@ -97,7 +97,7 @@ def travel_time(t0, x, y, vs, sta_x, sta_y):
 
 # define function to compute residual sum of squares
 def error(synth_arrivals,arrivals, weight):
-    res = (arrivals - synth_arrivals)* weight 
+    res = (arrivals - synth_arrivals).* weight 
     res_sqr = res**2
     mse = np.mean(res_sqr)
     rmse = np.sqrt(mse)
