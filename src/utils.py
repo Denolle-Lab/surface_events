@@ -2,6 +2,7 @@
 import numpy as np
 from obspy.signal.cross_correlation import correlate
 from obspy.core import UTCDateTime
+from geopy import distance
 
 #define a function that calculates picktimes at each station
 
