@@ -95,28 +95,28 @@ def travel_time(t0, x, y, vs, sta_x, sta_y):
     tt = t0 + dist/vs
     return tt
 
-# define function to compute residual sum of squares
-def error(synth_arrivals,arrivals, weight):
-    res = (arrivals - synth_arrivals).* weight 
-    res_sqr = res**2
-    mse = np.mean(res_sqr)
-    rmse = np.sqrt(mse)
-    return rmse
+# # define function to compute residual sum of squares
+# def error(synth_arrivals,arrivals, weight):
+#     res = (arrivals - synth_arrivals)* weight 
+#     res_sqr = res**2
+#     mse = np.mean(res_sqr)
+#     rmse = np.sqrt(mse)
+#     return rmse
 
-# define function to iterate through grid and calculate travel time residuals
-def gridsearch(t0,x_vect,y_vect,sta_x,sta_y,vs,arrivals, weight):
-    rss_mat = np.zeros((len(t0),len(x_vect),len(y_vect)))
-    rss_mat[:,:,:] = np.nan
-    for i in range(len(t0)):
-        for j in range(len(x_vect)):
-            for k in range(len(y_vect)):
-                synth_arrivals = []
-                for h in range(len(sta_x)):
-                    tt = travel_time(t0[i],x_vect[j],y_vect[k],vs,sta_x[h],sta_y[h])
-                    synth_arrivals.append(tt)
-                rss = error(np.array(synth_arrivals),np.array(arrivals), np.array(weight))
-                rss_mat[i,j,k] = rss
-    return rss_mat
+# # define function to iterate through grid and calculate travel time residuals
+# def gridsearch(t0,x_vect,y_vect,sta_x,sta_y,vs,arrivals, weight):
+#     rss_mat = np.zeros((len(t0),len(x_vect),len(y_vect)))
+#     rss_mat[:,:,:] = np.nan
+#     for i in range(len(t0)):
+#         for j in range(len(x_vect)):
+#             for k in range(len(y_vect)):
+#                 synth_arrivals = []
+#                 for h in range(len(sta_x)):
+#                     tt = travel_time(t0[i],x_vect[j],y_vect[k],vs,sta_x[h],sta_y[h])
+#                     synth_arrivals.append(tt)
+#                 rss = error(np.array(synth_arrivals),np.array(arrivals), np.array(weight))
+#                 rss_mat[i,j,k] = rss
+#     return rss_mat
 
 # define function to find lower-left corner of grid and grid size based on height of volcano
 def start_latlon(elevation, ratio, center_lat, center_lon):
