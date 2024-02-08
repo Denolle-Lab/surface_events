@@ -3,6 +3,8 @@ import numpy as np
 from obspy.signal.cross_correlation import correlate
 from obspy.core import UTCDateTime
 from geopy import distance
+from joblib import Parallel, delayed
+import pyproj
 
 #define a function that calculates picktimes at each station
 
@@ -103,20 +105,144 @@ def travel_time(t0, x, y, vs, sta_x, sta_y):
 #     rmse = np.sqrt(mse)
 #     return rmse
 
-# # define function to iterate through grid and calculate travel time residuals
-# def gridsearch(t0,x_vect,y_vect,sta_x,sta_y,vs,arrivals, weight):
-#     rss_mat = np.zeros((len(t0),len(x_vect),len(y_vect)))
-#     rss_mat[:,:,:] = np.nan
-#     for i in range(len(t0)):
-#         for j in range(len(x_vect)):
-#             for k in range(len(y_vect)):
-#                 synth_arrivals = []
-#                 for h in range(len(sta_x)):
-#                     tt = travel_time(t0[i],x_vect[j],y_vect[k],vs,sta_x[h],sta_y[h])
-#                     synth_arrivals.append(tt)
-#                 rss = error(np.array(synth_arrivals),np.array(arrivals), np.array(weight))
-#                 rss_mat[i,j,k] = rss
-#     return rss_mat
+#define function to iterate through grid and calculate travel time residuals
+def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
+               arrivals, x_step = 100 , t_step = 0.5, vs = 1000, weight=None):
+    '''
+    gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
+    lat_start, lon_start= lat, lon of source bottom left corner
+    lat_end,lon_end= lat, lon of source top right corner
+    sta_lat,sta_lon = lat, lon coordinates of stations
+    arrivals = array of arrival times of each station
+
+    x_step = spatial increment in meters, default is 100 m
+    t_step = temporal increment in seconds, default is 0.1 s
+    vs = velocity of shear wave in m/s, default is 1000 m/s
+    weight = array of weights for each station measurements
+
+
+
+    '''
+
+    proj = pyproj.Proj(proj='utm', zone=11, ellps='WGS84')
+
+    if lon_start<0: 
+        lon_start+=360
+        lon_end+=360
+
+    # Convert lat/long to Cartesian in meters
+    xsta, ysta = proj(sta_lon, sta_lat)
+    x1,y1=proj(lon_start,lat_start)
+    x2,y2=proj(lon_end,lat_end)
+    # Generate the x and y coordinates for the grid
+    x_coords = np.arange(x1, x2, x_step)
+    y_coords = np.arange(y1, y2, x_step)
+    t0 = np.arange(-3,3,t_step)
+
+    tpick =arrivals-np.min(arrivals)
+    rss_mat = np.zeros((len(t0),len(x_coords),len(y_coords)))
+    rss_mat[:,:,:] = np.nan
+    for i in range(len(t0)):
+        for j in range(len(x_coords)):
+            for k in range(len(y_coords)):
+                synth_arrivals = np.zeros(len(xsta))
+                for h in range(len(xsta)):
+                    tt = travel_time(t0[i],x_coords[j],y_coords[k],vs,xsta[h],ysta[h])
+                    synth_arrivals[h]=tt
+                if weight is None:
+                    rss = np.sqrt(np.mean(((tpick - synth_arrivals) ))**2)
+                else:
+                    rss = np.sqrt(np.mean(((tpick - synth_arrivals) *weight))**2)
+
+
+                # giant residual matri
+                rss_mat[i,j,k] = rss
+
+        # I confirm that this grid search is working
+        # Create a new figure with a specific size (in inches) and DPI
+        # fig, ax = plt.subplots(figsize=(10, 10), dpi=100)
+        # cax = ax.imshow(rss_mat[i,:,:], cmap='hot', interpolation='nearest')
+        # fig.colorbar(cax)
+        # plt.show()
+    
+    oc_idx = np.unravel_index([np.argmin(rss_mat)], rss_mat.shape)
+    t_best = t0[oc_idx[0]]
+    x_best = x_coords[oc_idx[1]]
+    y_best = y_coords[oc_idx[2]]
+
+    if oc_idx[0]==len(t0) or oc_idx[0]==0: print("grid search failed to converge in time")
+    if oc_idx[1]==len(x_coords) or oc_idx[1]==0: print("grid search failed to converge in longitude")
+    if oc_idx[2]==len(y_coords) or oc_idx[2]==0: print("grid search failed to converge in latitude")
+
+    # Convert Cartesian back to lat/long
+    lon_best, lat_best = proj(x_best, y_best, inverse=True)
+
+    return rss_mat, t_best, lon_best, lat_best, oc_idx
+
+#define function to iterate through grid and calculate travel time residuals
+
+def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
+               arrivals, x_step=100,t_step=0.5,vs=1000,weight=None):
+    '''
+    gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
+    lat_start, lon_start= lat, lon of source bottom left corner
+    lat_end,lon_end= lat, lon of source top right corner
+    sta_lat,sta_lon = lat, lon coordinates of stations
+    arrivals = array of arrival times of each station
+
+    x_step = spatial increment in meters, default is 100 m
+    t_step = temporal increment in seconds, default is 0.1 s
+    vs = velocity of shear wave in m/s, default is 1000 m/s
+    weight = array of weights for each station measurements
+
+
+
+    '''
+
+    proj = pyproj.Proj(proj='utm', zone=11, ellps='WGS84')
+
+    if lon_start<0: 
+        lon_start+=360
+        lon_end+=360
+
+    # Convert lat/long to Cartesian in meters
+    xsta, ysta = proj(sta_lon, sta_lat)
+    x1,y1=proj(lon_start,lat_start)
+    x2,y2=proj(lon_end,lat_end)
+    # Generate the x and y coordinates for the grid
+    x_coords = np.arange(x1, x2, x_step)
+    y_coords = np.arange(y1, y2, x_step)
+    t0 = np.arange(-3,3,t_step)
+
+    tpick =arrivals-np.min(arrivals)
+
+    def rss_calc(tt0):
+        resmin=np.inf
+        idx=[0,0]
+        for j in range(len(x_coords)):
+            for k in range(len(y_coords)):
+                for h in range(len(xsta)):
+                    tt = travel_time(tt0,x_coords[j],y_coords[k],vs,xsta[h],ysta[h])
+                if weight is None:
+                    rss = np.sqrt(np.mean(((tpick - tt) ))**2)
+                else:
+                    rss = np.sqrt(np.mean(((tpick - tt) *weight))**2)
+                if rss<resmin:
+                    resmin=rss
+                    idx = [j,k]
+        return resmin, idx[0],idx[1]
+    
+    # Create a pool of workers to execute the rss_calc function in parallel
+    results = np.array(Parallel(n_jobs=8)(delayed(rss_calc)(tt0) for tt0 in t0))
+    imin = np.argmin(results[:,0],axis=0)
+    t_best = t0[imin]
+    x_best = x_coords[int(results[imin, 1])] 
+    y_best = y_coords[int(results[imin, 2])] 
+    # Convert Cartesian back to lat/long
+    lon_best, lat_best = proj(x_best, y_best, inverse=True)
+
+    return t_best, lon_best, lat_best #,oc_idx
+
 
 # define function to find lower-left corner of grid and grid size based on height of volcano
 def start_latlon(elevation, ratio, center_lat, center_lon):
