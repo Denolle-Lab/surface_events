@@ -182,7 +182,7 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
 #define function to iterate through grid and calculate travel time residuals
 
 def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
-               arrivals, x_step=100,t_step=0.5,vs=1000,weight=None):
+               arrivals, x_step=100,t_step=0.25,vs=1000,weight=None):
     '''
     gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
     lat_start, lon_start= lat, lon of source bottom left corner
@@ -212,7 +212,7 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     # Generate the x and y coordinates for the grid
     x_coords = np.arange(x1, x2, x_step)
     y_coords = np.arange(y1, y2, x_step)
-    t0 = np.arange(-3,3,t_step)
+    t0 = np.arange(-5,5,t_step)
 
     tpick =arrivals-np.min(arrivals)
     def rss_calc(tt0):
