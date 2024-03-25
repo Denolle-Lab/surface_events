@@ -215,7 +215,6 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     t0 = np.arange(-3,3,t_step)
 
     tpick =arrivals-np.min(arrivals)
-
     def rss_calc(tt0):
         resmin=np.inf
         idx=[0,0]
@@ -235,6 +234,7 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     # Create a pool of workers to execute the rss_calc function in parallel
     results = np.array(Parallel(n_jobs=8)(delayed(rss_calc)(tt0) for tt0 in t0))
     imin = np.argmin(results[:,0],axis=0)
+    print(imin)
     t_best = t0[imin]
     x_best = x_coords[int(results[imin, 1])] 
     y_best = y_coords[int(results[imin, 2])] 
