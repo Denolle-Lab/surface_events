@@ -199,7 +199,7 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
 
     '''
 
-    proj = pyproj.Proj(proj='utm', zone=11, ellps='WGS84')
+    proj = pyproj.Proj(proj='utm', zone=10, ellps='WGS84')
 
     if lon_start<0: 
         lon_start+=360
