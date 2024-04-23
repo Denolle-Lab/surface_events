@@ -273,13 +273,13 @@ def gridsearch_parallel_vs(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     # Generate the x and y coordinates for the grid
     x_coords = np.arange(x1, x2, x_step)
     y_coords = np.arange(y1, y2, x_step)
-    t0 = np.arange(-5,5,t_step)
+    t0 = np.arange(-2,2,t_step)
 
     tpick =arrivals-np.min(arrivals)
     def rss_calc(tt0):
         resmin=np.inf
         idx=[0,0]
-        for iv in range(1000,5000,100):
+        for iv in range(800,5000,100):
             for j in range(len(x_coords)):
                 for k in range(len(y_coords)):
                     for h in range(len(xsta)):
