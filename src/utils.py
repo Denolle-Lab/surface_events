@@ -150,9 +150,11 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
                     tt = travel_time(t0[i],x_coords[j],y_coords[k],vs,xsta[h],ysta[h])
                     synth_arrivals[h]=tt
                 if weight is None:
-                    rss = np.sqrt(np.mean(((tpick - synth_arrivals) ))**2)
+                    rss = np.sum(np.abs(tpick - synth_arrivals))/len(tpick)
+                    # rss = np.sqrt(np.mean(((tpick - synth_arrivals) ))**2)
                 else:
-                    rss = np.sqrt(np.mean(((tpick - synth_arrivals) *weight))**2)
+                    rss = np.sum(np.abs(tpick - synth_arrivals) *weight)/len(tpick)/np.sum(weight)
+                    # rss = np.sqrt(np.mean(((tpick - synth_arrivals) *weight))**2)
 
 
                 # giant residual matri
@@ -223,9 +225,11 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
                 for h in range(len(xsta)):
                     tt = travel_time(tt0,x_coords[j],y_coords[k],vs,xsta[h],ysta[h])
                 if weight is None:
-                    rss = np.sqrt(np.mean(((tpick - tt) ))**2)
+                    rss = np.sum(np.abs(tpick - tt))/len(tpick)
+                    # rss = np.sqrt(np.mean(((tpick - tt) ))**2)
                 else:
-                    rss = np.sqrt(np.mean(((tpick - tt) *weight))**2)
+                    rss = np.sum(np.abs((tpick - tt) *weight))/len(tpick)/np.sum(weight)
+                    # rss = np.sqrt(np.mean(((tpick - tt) *weight))**2)
                 if rss<resmin:
                     resmin=rss
                     idx = [j,k]
