@@ -63,7 +63,7 @@ def events_per_month(starttimes, events):
 
 # define function to fit data to
 
-def test_func(theta, a,theta0, c):
+def doppler_func(theta, a,theta0, c):
     return a * np.cos(theta-theta0)+c
 
 # define a function to make plots of weighted data
@@ -107,7 +107,7 @@ def travel_time(t0, x, y, vs, sta_x, sta_y):
 
 #define function to iterate through grid and calculate travel time residuals
 def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
-               arrivals, x_step = 100 , t_step = 0.5, vs = 1000, weight=None):
+               arrivals, x_step = 100 , t_step = 0.1, vs = 2800, weight=None):
     '''
     gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
     lat_start, lon_start= lat, lon of source bottom left corner
@@ -124,7 +124,7 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
 
     '''
 
-    proj = pyproj.Proj(proj='utm', zone=11, ellps='WGS84')
+    proj = pyproj.Proj(proj='utm', zone=10, ellps='WGS84')
 
     if lon_start<0: 
         lon_start+=360
@@ -137,7 +137,7 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
     # Generate the x and y coordinates for the grid
     x_coords = np.arange(x1, x2, x_step)
     y_coords = np.arange(y1, y2, x_step)
-    t0 = np.arange(-3,3,t_step)
+    t0 = np.arange(-2,0,t_step)
 
     tpick =arrivals-np.min(arrivals)
     rss_mat = np.zeros((len(t0),len(x_coords),len(y_coords)))
@@ -168,8 +168,8 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
         # plt.show()
     
     oc_idx = np.unravel_index([np.argmin(rss_mat)], rss_mat.shape)
-    t_best = t0[oc_idx[0]]
-    x_best = x_coords[oc_idx[1]]
+    t_best = t0[oc_idx[0]]#+np.min(arrivals) # add the first pick time since it was found relative to 
+    x_best = x_coords[oc_idx[1]] 
     y_best = y_coords[oc_idx[2]]
 
     if oc_idx[0]==len(t0) or oc_idx[0]==0: print("grid search failed to converge in the origin time")
@@ -179,12 +179,12 @@ def gridsearch(lat_start, lon_start, lat_end, lon_end, sta_lat, sta_lon,\
     # Convert Cartesian back to lat/long
     lon_best, lat_best = proj(x_best, y_best, inverse=True)
 
-    return rss_mat, t_best, lon_best, lat_best, oc_idx
+    return rss_mat, t_best, lon_best, lat_best, x_best,y_best, oc_idx
 
 #define function to iterate through grid and calculate travel time residuals
 
 def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
-               arrivals, x_step=100,t_step=0.25,vs=1000,weight=None):
+               arrivals, x_step=100,t_step=0.1,vs=2800,weight=None):
     '''
     gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
     lat_start, lon_start= lat, lon of source bottom left corner
@@ -214,12 +214,16 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     # Generate the x and y coordinates for the grid
     x_coords = np.arange(x1, x2, x_step)
     y_coords = np.arange(y1, y2, x_step)
-    t0 = np.arange(-5,5,t_step)
+    t0 = np.arange(-2,0,t_step)
 
     tpick =arrivals-np.min(arrivals)
+
     def rss_calc(tt0):
-        resmin=np.inf
-        idx=[0,0]
+
+        rss_mat = np.zeros((len(x_coords),len(y_coords)))
+        rss_mat[:,:] = np.nan
+        # resmin=np.inf
+        # idx=[0,0]
         for j in range(len(x_coords)):
             for k in range(len(y_coords)):
                 for h in range(len(xsta)):
@@ -230,13 +234,24 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
                 else:
                     rss = np.sum(np.abs((tpick - tt) *weight))/len(tpick)/np.sum(weight)
                     # rss = np.sqrt(np.mean(((tpick - tt) *weight))**2)
-                if rss<resmin:
-                    resmin=rss
-                    idx = [j,k]
+                
+                # giant residual matri
+                rss_mat[j,k] = rss
+                # if rss<resmin:
+                    # resmin=rss
+                    # idx = [j,k]
+        idx = np.unravel_index([np.argmin(rss_mat)], rss_mat.shape)
+        resmin = rss_mat[idx[0],idx[1]]
+        # t_best = t0[oc_idx[0]]
+        # x_best = x_coords[idx[1]]
+        # y_best = y_coords[idx[2]]
+
         return resmin, idx[0],idx[1]
     
     # Create a pool of workers to execute the rss_calc function in parallel
     results = np.array(Parallel(n_jobs=8)(delayed(rss_calc)(tt0) for tt0 in t0))
+    oc_idx = np.unravel_index([np.argmin(results)], results.shape)
+    t_best = t0[oc_idx[0]]
     imin = np.argmin(results[:,0],axis=0)
     t_best = t0[imin]
     x_best = x_coords[int(results[imin, 1])] 
@@ -244,70 +259,7 @@ def gridsearch_parallel(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
     # Convert Cartesian back to lat/long
     lon_best, lat_best = proj(x_best, y_best, inverse=True)
 
-    return t_best, lon_best, lat_best #,oc_idx
-
-def gridsearch_parallel_vs(lat_start,lon_start,lat_end,lon_end,sta_lat,sta_lon,\
-               arrivals, x_step=100,t_step=0.25,weight=None):
-    '''
-    gridsearch(t0,X,Y,sta_x,sta_y,vs,arrivals, weight)
-    lat_start, lon_start= lat, lon of source bottom left corner
-    lat_end,lon_end= lat, lon of source top right corner
-    sta_lat,sta_lon = lat, lon coordinates of stations
-    arrivals = array of arrival times of each station
-
-    x_step = spatial increment in meters, default is 100 m
-    t_step = temporal increment in seconds, default is 0.1 s
-    vs = velocity of shear wave in m/s, default is 1000 m/s
-    weight = array of weights for each station measurements
-
-
-
-    '''
-
-    proj = pyproj.Proj(proj='utm', zone=10, ellps='WGS84')
-
-    if lon_start<0: 
-        lon_start+=360
-        lon_end+=360
-
-    # Convert lat/long to Cartesian in meters
-    xsta, ysta = proj(sta_lon, sta_lat)
-    x1,y1=proj(lon_start,lat_start)
-    x2,y2=proj(lon_end,lat_end)
-    # Generate the x and y coordinates for the grid
-    x_coords = np.arange(x1, x2, x_step)
-    y_coords = np.arange(y1, y2, x_step)
-    t0 = np.arange(-2,2,t_step)
-
-    tpick =arrivals-np.min(arrivals)
-    def rss_calc(tt0):
-        resmin=np.inf
-        idx=[0,0]
-        for iv in range(800,5000,100):
-            for j in range(len(x_coords)):
-                for k in range(len(y_coords)):
-                    for h in range(len(xsta)):
-                        tt = travel_time(tt0,x_coords[j],y_coords[k],iv,xsta[h],ysta[h])
-                    if weight is None:
-                        rss = np.sqrt(np.mean(((tpick - tt) ))**2)
-                    else:
-                        rss = np.sqrt(np.mean(((tpick - tt) *weight))**2)
-                    if rss<resmin:
-                        resmin=rss
-                        idx = [j,k,iv]
-        return resmin, idx[0],idx[1],idx[2]
-    
-    # Create a pool of workers to execute the rss_calc function in parallel
-    results = np.array(Parallel(n_jobs=8)(delayed(rss_calc)(tt0) for tt0 in t0))
-    imin = np.argmin(results[:,0],axis=0)
-    t_best = t0[imin]
-    x_best = x_coords[int(results[imin, 1])] 
-    y_best = y_coords[int(results[imin, 2])] 
-    v_best = results[imin,3]
-    # Convert Cartesian back to lat/long
-    lon_best, lat_best = proj(x_best, y_best, inverse=True)
-
-    return t_best, lon_best, lat_best , v_best #,oc_
+    return t_best, lon_best, lat_best,x_best,y_best #,oc_idx
 
 
 # define function to find lower-left corner of grid and grid size based on height of volcano
